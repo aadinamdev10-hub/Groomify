@@ -1,0 +1,1067 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--g:#B8963E;--gl:#D4AF60;--gd:#7A6028;--bg:#0C0B09;--s1:#131210;--s2:#1C1A16;--s3:#26231D;--s4:#333027;--mt:#7A7060;--lt:#C8BFA8;--wh:#F2EDE4;--rd:4px}
+  html{scroll-behavior:smooth}
+  body{
+    background:
+    linear-gradient(rgba(7,7,7,0.82),rgba(7,7,7,0.94)),
+    url('https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=1800&q=100') center/cover fixed no-repeat;
+    color:var(--wh);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    line-height:1.6;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at top right, rgba(184,150,62,0.14), transparent 35%),radial-gradient(circle at bottom left, rgba(184,150,62,0.08), transparent 30%);pointer-events:none;z-index:-1}
+
+  body::after{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+    radial-gradient(circle at 20% 20%, rgba(184,150,62,0.18), transparent 20%),
+    radial-gradient(circle at 80% 80%, rgba(184,150,62,0.12), transparent 20%),
+    radial-gradient(circle at center, rgba(255,255,255,0.03), transparent 40%);
+    mix-blend-mode:screen;
+    animation:ambientMove 12s ease-in-out infinite alternate;
+    pointer-events:none;
+    z-index:-1;
+  }
+
+  @keyframes ambientMove{
+    from{transform:translateY(0px) scale(1)}
+    to{transform:translateY(-20px) scale(1.03)}
+  }
+  
+  /* CURSOR */
+  .cursor{width:8px;height:8px;background:var(--g);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transition:transform 0.1s;mix-blend-mode:difference}
+  .cursor-ring{width:32px;height:32px;border:1px solid rgba(184,150,62,0.5);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:all 0.18s ease}
+  
+  /* NAV */
+  .nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(10,10,10,0.45);
+    backdrop-filter:blur(28px) saturate(180%);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    box-shadow:0 10px 40px rgba(0,0,0,0.25);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:60px}
+  .logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;letter-spacing:0.04em;color:var(--wh);cursor:pointer;display:flex;align-items:center;gap:6px}
+  .logo-dot{width:7px;height:7px;background:var(--g);border-radius:50%;display:inline-block;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+  .nav-links{display:flex;gap:0;list-style:none}
+  .nav-link{padding:0 1.1rem;height:60px;display:flex;align-items:center;cursor:pointer;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mt);transition:color 0.2s;position:relative}
+  .nav-drop{position:relative}
+  .nav-menu{position:absolute;top:60px;left:0;min-width:240px;background:rgba(15,15,15,0.96);backdrop-filter:blur(20px);border:1px solid rgba(184,150,62,0.15);border-radius:14px;padding:0.7rem;display:none;flex-direction:column;gap:0.35rem;box-shadow:0 20px 50px rgba(0,0,0,0.35)}
+  .nav-drop:hover .nav-menu{display:flex}
+  .nav-menu button{background:transparent;border:none;color:var(--lt);padding:0.8rem 1rem;text-align:left;border-radius:10px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.25s;font-size:12px;letter-spacing:0.05em}
+  .nav-menu button:hover{background:rgba(184,150,62,0.12);color:var(--g);transform:translateX(4px)}
+  .nav-link::after{content:'';position:absolute;bottom:0;left:1.1rem;right:1.1rem;height:1px;background:var(--g);transform:scaleX(0);transition:transform 0.3s}
+  .nav-link:hover,.nav-link.active{color:var(--wh)}
+  .nav-link:hover::after,.nav-link.active::after{transform:scaleX(1)}
+  .nav-right{display:flex;align-items:center;gap:1rem}
+  .auth-btn{display:flex;align-items:center;gap:8px;background:transparent;border:1px solid rgba(184,150,62,0.4);color:var(--g);padding:0.45rem 1.1rem;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.25s;border-radius:var(--rd)}
+  .auth-btn:hover{background:rgba(184,150,62,0.1);transform:translateY(-1px)}
+  
+  /* PAGES */
+  .page{display:none}
+  .page.on{display:block}
+  
+  /* HERO */
+  .hero{
+    min-height:calc(100vh - 60px);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    position:relative;
+    overflow:hidden;
+    background:
+    linear-gradient(90deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35)),
+    url('https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1800&q=100') center/cover fixed no-repeat;
+  }
+  .hero-left{padding:4rem 3rem 3rem;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:2}
+  .hero-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(184,150,62,0.12);border:1px solid rgba(184,150,62,0.25);color:var(--g);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:0.35rem 0.9rem;border-radius:20px;margin-bottom:2rem;width:fit-content}
+  .hero-tag span{width:6px;height:6px;background:var(--g);border-radius:50%;animation:pulse 1.5s infinite}
+  .hero-h1{font-family:'Playfair Display',serif;font-size:clamp(3rem,5.5vw,5rem);font-weight:900;line-height:1.0;margin-bottom:0.5rem;letter-spacing:-0.01em}
+  .hero-h1 em{font-style:italic;color:var(--g);display:block}
+  .hero-sub{color:var(--mt);font-size:14px;line-height:1.8;max-width:380px;margin-bottom:2.5rem}
+  .hero-actions{display:flex;gap:0.8rem;flex-wrap:wrap;margin-bottom:3rem}
+  .btn-primary{
+    background:linear-gradient(135deg,#B8963E,#D4AF60);
+    color:var(--bg);
+    border:none;
+    padding:0.85rem 2rem;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+    border-radius:100px;
+    transition:all 0.4s ease;
+    box-shadow:0 10px 30px rgba(184,150,62,0.25);
+  }
+
+  .btn-primary:hover{
+    transform:translateY(-4px) scale(1.02);
+    box-shadow:0 16px 40px rgba(184,150,62,0.4);
+  }
+  .btn-ghost{background:transparent;color:var(--wh);border:1px solid rgba(255,255,255,0.18);padding:0.75rem 2rem;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;border-radius:var(--rd);transition:all 0.25s}
+  .btn-ghost:hover{border-color:var(--g);color:var(--g)}
+  .hero-stats{display:flex;gap:2rem}
+  .hstat{border-left:1px solid rgba(184,150,62,0.3);padding-left:1rem}
+  .hstat-v{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--g);display:block;line-height:1}
+  .hstat-l{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mt);margin-top:3px}
+  
+  /* HERO RIGHT — graphic */
+  .hero-right{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(rgba(0,0,0,0.35),rgba(0,0,0,0.45)),url('https://images.unsplash.com/photo-1517832606299-7ae9b720a186?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat}
+  .hero-graphic{position:relative;width:340px;height:340px}
+  .hg-ring{position:absolute;border-radius:50%;border:1px solid rgba(184,150,62,0.15);animation:spin 20s linear infinite}
+  .hg-ring:nth-child(1){inset:0;animation-direction:normal}
+  .hg-ring:nth-child(2){inset:30px;border-color:rgba(184,150,62,0.1);animation-duration:30s;animation-direction:reverse}
+  .hg-ring:nth-child(3){inset:60px;border-color:rgba(184,150,62,0.2);animation-duration:25s}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  .hg-center{position:absolute;inset:90px;background:var(--s2);border-radius:50%;border:1px solid rgba(184,150,62,0.25);display:flex;align-items:center;justify-content:center;flex-direction:column}
+  .hg-icon{font-size:3.5rem}
+  .hg-label{font-family:'Playfair Display',serif;font-size:0.9rem;color:var(--g);font-style:italic;margin-top:4px}
+  .hg-orbit{position:absolute;width:44px;height:44px;background:var(--s3);border:1px solid rgba(184,150,62,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all 0.3s}
+  .hg-orbit:hover{background:var(--g);transform:scale(1.1)}
+  .hg-orbit:nth-of-type(2){top:20px;left:50%;transform:translateX(-50%)}
+  .hg-orbit:nth-of-type(3){top:50%;right:10px;transform:translateY(-50%)}
+  .hg-orbit:nth-of-type(4){bottom:20px;left:50%;transform:translateX(-50%)}
+  .hg-orbit:nth-of-type(5){top:50%;left:10px;transform:translateY(-50%)}
+  .hero-bg-word{position:absolute;font-family:'Playfair Display',serif;font-size:12rem;font-weight:900;color:rgba(184,150,62,0.04);white-space:nowrap;right:-2rem;top:50%;transform:translateY(-50%);pointer-events:none;letter-spacing:-0.05em}
+  
+  /* SCROLL TICKER */
+  .ticker{background:var(--g);padding:0.55rem 0;overflow:hidden;white-space:nowrap}
+  .ticker-inner{display:inline-flex;gap:3rem;animation:ticker 18s linear infinite}
+  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-item{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--bg);display:flex;align-items:center;gap:0.8rem}
+  .ticker-sep{opacity:0.4;font-size:8px}
+  
+  /* SECTION SHARED */
+  .sec{padding:4rem 2.5rem}
+  .sec-label{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--g);margin-bottom:0.5rem;display:flex;align-items:center;gap:8px}
+  .sec-label::before{content:'';width:24px;height:1px;background:var(--g)}
+  .sec-h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;line-height:1.1;margin-bottom:0.4rem}
+  .sec-h2 em{font-style:italic;color:var(--g)}
+  
+  /* SERVICES — horizontal cards */
+  .svc-scroll{display:flex;gap:1rem;overflow-x:auto;padding-bottom:1rem;margin-top:2rem;scrollbar-width:none}
+  .svc-scroll::-webkit-scrollbar{display:none}
+  .svc-card{
+    min-width:280px;
+    background:rgba(24,24,24,0.88);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:22px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:all 0.4s ease;
+    flex-shrink:0;
+    position:relative;
+    backdrop-filter:blur(18px);
+    box-shadow:0 10px 35px rgba(0,0,0,0.22);
+  }
+  .svc-card:hover{
+    background:rgba(34,34,34,0.96);
+    border-color:rgba(184,150,62,0.28);
+    transform:translateY(-10px) scale(1.02);
+    box-shadow:0 24px 60px rgba(0,0,0,0.35);
+  }
+  .svc-emoji{font-size:2rem;margin-bottom:1rem;display:block}
+  .svc-name{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:0.3rem}
+  .svc-dur{font-size:11px;color:var(--mt);margin-bottom:0.8rem;letter-spacing:0.05em}
+  .svc-price{color:var(--g);font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700}
+  .svc-book-btn{margin-top:0.8rem;width:100%;background:transparent;border:1px solid rgba(184,150,62,0.3);color:var(--g);padding:0.45rem;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;border-radius:var(--rd);transition:all 0.25s}
+  .svc-book-btn:hover{background:var(--g);color:var(--bg)}
+  
+  /* BOOKING PANEL */
+  .book-panel{background:linear-gradient(rgba(19,18,16,0.92),rgba(19,18,16,0.92)),url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;border-top:1px solid rgba(184,150,62,0.1)}
+  .book-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;padding:3rem 2.5rem}
+  .book-info h3{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;margin-bottom:0.8rem}
+  .book-info p{color:var(--mt);font-size:13px;line-height:1.8;margin-bottom:1.5rem}
+  .perks{list-style:none;display:flex;flex-direction:column;gap:0.6rem}
+  .perks li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--lt)}
+  .perks li::before{content:'✦';color:var(--g);font-size:9px;flex-shrink:0}
+  .book-form{background:var(--s2);border:1px solid rgba(184,150,62,0.12);border-radius:8px;padding:1.8rem}
+  .fg{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem}
+  .fr{margin-bottom:0.8rem}
+  .fl{display:block;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mt);margin-bottom:0.3rem}
+  .fi{width:100%;background:var(--s3);border:1px solid rgba(255,255,255,0.07);color:var(--wh);padding:0.6rem 0.8rem;font-family:'Inter',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;border-radius:var(--rd)}
+  .fi:focus{border-color:var(--g)}
+  .fi option{background:var(--s3)}
+  .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:4px}
+  .sl{background:var(--s3);border:1px solid rgba(255,255,255,0.06);color:var(--mt);padding:0.4rem;font-size:11px;text-align:center;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;border-radius:var(--rd)}
+  .sl:hover{border-color:var(--g);color:var(--g)}
+  .sl.on{background:var(--g);border-color:var(--g);color:var(--bg);font-weight:600}
+  .book-success{text-align:center;padding:2.5rem;background:var(--s2);border:1px solid rgba(184,150,62,0.2);border-radius:8px}
+  .bs-icon{font-size:2.5rem;color:var(--g);font-family:'Playfair Display',serif;margin-bottom:0.8rem;display:block}
+  .bs-h{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--g);margin-bottom:0.4rem}
+  .bs-p{color:var(--mt);font-size:13px}
+  
+  /* PRODUCTS */
+  .prod-tabs{display:flex;gap:4px;margin-bottom:1.5rem;background:var(--s2);padding:4px;border-radius:var(--rd);width:fit-content}
+  .ptab{background:transparent;border:none;color:var(--mt);padding:0.4rem 1rem;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;border-radius:var(--rd);transition:all 0.2s}
+  .ptab.on{background:var(--g);color:var(--bg);font-weight:600}
+  .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+  .prod-card{
+    background:rgba(24,24,24,0.72);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius:20px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:all 0.45s ease;
+    backdrop-filter:blur(14px);
+    position:relative;
+  }
+  .prod-card:hover{
+    transform:translateY(-10px) scale(1.02);
+    border-color:rgba(184,150,62,0.35);
+    box-shadow:0 25px 60px rgba(0,0,0,0.35);
+  }
+  .prod-img{height:130px;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative}
+  .pbadge{position:absolute;top:8px;right:8px;background:var(--g);color:var(--bg);font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 7px;border-radius:3px}
+  .prod-body{padding:1rem}
+  .pbrand{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--g);margin-bottom:3px}
+  .pname{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:4px}
+  .pdesc{font-size:11px;color:var(--mt);line-height:1.5;margin-bottom:0.8rem}
+  .pfoot{display:flex;align-items:center;justify-content:space-between}
+  .pprice{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--g);font-weight:700}
+  
+  /* REVIEWS */
+  .rev-strip{display:flex;gap:1rem;overflow-x:auto;padding-bottom:0.5rem;margin-top:1.5rem;scrollbar-width:none}
+  .rev-strip::-webkit-scrollbar{display:none}
+  .rev-card{min-width:260px;background:var(--s2);border:1px solid rgba(184,150,62,0.08);border-radius:8px;padding:1.3rem;flex-shrink:0;transition:border-color 0.3s}
+  .rev-card:hover{border-color:rgba(184,150,62,0.25)}
+  .rstars{color:var(--g);font-size:11px;letter-spacing:2px;margin-bottom:0.6rem}
+  .rtxt{font-size:12.5px;color:var(--lt);line-height:1.7;font-style:italic;margin-bottom:0.9rem}
+  .rauth{display:flex;align-items:center;gap:8px}
+  .rav{width:32px;height:32px;border-radius:50%;background:rgba(184,150,62,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--g);font-family:'Playfair Display',serif;flex-shrink:0;border:1px solid rgba(184,150,62,0.25)}
+  .rname{font-size:12px;font-weight:600}
+  .rloc{font-size:10px;color:var(--mt)}
+  
+  /* ABOUT */
+  .about-hero{background:linear-gradient(rgba(19,18,16,0.9),rgba(19,18,16,0.9)),url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;padding:3rem 2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+  .about-vis{position:relative;height:260px;display:flex;align-items:center;justify-content:center}
+  .av-box{position:absolute;background:var(--s2);border:1px solid rgba(184,150,62,0.2);border-radius:8px}
+  .av-box:nth-child(1){width:150px;height:150px;top:10px;left:30px;display:flex;align-items:center;justify-content:center;font-size:3rem}
+  .av-box:nth-child(2){width:130px;height:100px;bottom:10px;right:20px;padding:1rem}
+  .av-box:nth-child(3){width:100px;height:80px;bottom:30px;left:10px;background:rgba(184,150,62,0.1);border-color:var(--g);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--g);font-weight:700}
+  .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-top:1.5rem}
+  .feat{background:var(--s2);border-radius:6px;padding:1rem;border-left:2px solid var(--g)}
+  .feat-t{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:0.3rem}
+  .feat-d{font-size:11.5px;color:var(--mt);line-height:1.6}
+  .team-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.8rem;margin-top:1.5rem;padding:0 2.5rem 2.5rem}
+  .tm{background:var(--s2);border-radius:8px;padding:1rem;text-align:center;border:1px solid rgba(184,150,62,0.08);transition:all 0.3s}
+  .tm:hover{border-color:rgba(184,150,62,0.3);transform:translateY(-3px)}
+  .tmav{width:48px;height:48px;border-radius:50%;background:rgba(184,150,62,0.12);border:1px solid rgba(184,150,62,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1rem;color:var(--g);margin:0 auto 0.6rem}
+  .tmn{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:2px}
+  .tmr{font-size:10px;color:var(--mt);letter-spacing:0.08em;text-transform:uppercase}
+  
+  /* CONTACT */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;padding:2.5rem;background:linear-gradient(rgba(28,26,22,0.9),rgba(28,26,22,0.9)),url('https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;border-radius:10px}
+  .cinfo-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:1.2rem}
+  .cico{width:32px;height:32px;background:rgba(184,150,62,0.12);border:1px solid rgba(184,150,62,0.25);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .clbl{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--mt);margin-bottom:2px}
+  .cval{font-size:13px}
+  
+  /* TOAST */
+  .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--s3);border:1px solid var(--g);color:var(--wh);padding:0.7rem 1.3rem;font-size:12.5px;border-radius:6px;opacity:0;transform:translateY(10px);transition:all 0.35s;z-index:500;pointer-events:none;max-width:280px}
+  .toast.on{opacity:1;transform:translateY(0)}
+  
+  /* FOOTER */
+  .footer{background:var(--s1);border-top:1px solid rgba(184,150,62,0.1);padding:1.5rem 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.8rem}
+  .footer-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--g)}
+  .footer-copy{font-size:11px;color:var(--mt)}
+  .footer-links{display:flex;gap:1.2rem}
+  .footer-links span{font-size:11px;color:var(--mt);cursor:pointer;transition:color 0.2s}
+  .footer-links span:hover{color:var(--g)}
+  
+  @media(max-width:600px){
+    .hero{grid-template-columns:1fr}
+    .hero-right{display:none}
+    .book-inner,.about-hero,.contact-grid{grid-template-columns:1fr}
+    .fg{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .nav-inner{padding:0 1.2rem}
+    .sec{padding:2.5rem 1.2rem}
+  }
+  </style>
+  
+  <div class="cursor" id="cur"></div>
+  <div class="cursor-ring" id="curR"></div>
+  
+  <div class="app">
+  
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo" onclick="go('home')">
+        <span class="logo-dot"></span>Groomify
+      </div>
+      <ul class="nav-links">
+        <li class="nav-link" onclick="go('home')" id="nl-home">Home</li>
+        <li class="nav-link nav-drop" id="nl-services">
+          Services
+          <div class="nav-menu">
+            <button onclick="go('services')">All Services</button>
+            <button onclick="go('booking')">Book Haircut</button>
+            <button onclick="go('booking')">Beard Styling</button>
+            <button onclick="go('booking')">Hair Spa</button>
+            <button onclick="go('booking')">Premium Package</button>
+            <button onclick="go('shop')">Products Store</button>
+          </div>
+        </li>
+        <li class="nav-link" onclick="go('shop')" id="nl-shop">Shop</li>
+        <li class="nav-link" onclick="go('contact')" id="nl-contact">Contact</li>
+      </ul>
+      <div class="nav-right">
+        <button class="auth-btn" id="authBtn" onclick="openAuth()">Login</button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- HOME -->
+  <div class="page on" id="pg-home">
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-tag"><span></span>Bhopal's Premier Barbershop</div>
+        <h1 class="hero-h1">Smart Grooming,<em>Simplified.</em></h1>
+        <p class="hero-sub">Where precision meets luxury. Book an appointment, explore signature services, and shop professional grooming products — all in one place.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="go('booking')">Book Appointment</button>
+          <button class="btn-ghost" onclick="go('services')">Explore Services</button>
+          <button class="btn-ghost" onclick="go('shop')">Shop Now</button>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat"><span class="hstat-v">5K+</span><span class="hstat-l">Clients</span></div>
+          <div class="hstat"><span class="hstat-v">4.9★</span><span class="hstat-l">Rating</span></div>
+          <div class="hstat"><span class="hstat-v">12</span><span class="hstat-l">Barbers</span></div>
+          <div class="hstat"><span class="hstat-v">8yr</span><span class="hstat-l">Experience</span></div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-bg-word">GROOM</div>
+        <div class="hero-graphic">
+          <div class="hg-ring"></div>
+          <div class="hg-ring"></div>
+          <div class="hg-ring"></div>
+          <div class="hg-center">
+            <div class="hg-icon">✂️</div>
+            <div class="hg-label">Groomify</div>
+          </div>
+          <div class="hg-orbit" onclick="go('booking')" title="Book">📅</div>
+          <div class="hg-orbit" onclick="go('shop')" title="Shop">🛍️</div>
+          <div class="hg-orbit" onclick="go('services')" title="Services">💈</div>
+          <div class="hg-orbit" onclick="go('reviews')" title="Reviews">⭐</div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="ticker">
+      <div class="ticker-inner" id="tickerEl"></div>
+    </div>
+  
+    <!-- Quick services preview -->
+    <div class="sec">
+      <div class="sec-label">What we offer</div>
+      <div class="sec-h2">Our <em>Signature</em> Services</div>
+      <div class="svc-scroll" id="homesvcs"></div>
+      <div style="text-align:center;margin-top:1.5rem">
+        <button class="btn-ghost" onclick="go('services')">View All Services →</button>
+      </div>
+    </div>
+
+    <!-- ABOUT SECTION (inline on home) -->
+    <div style="background:linear-gradient(rgba(19,18,16,0.96),rgba(19,18,16,0.96)),url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1400&q=80') center/cover no-repeat;padding:4rem 2.5rem;border-top:1px solid rgba(184,150,62,0.1)">
+      <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center">
+        <div>
+          <div class="sec-label">Our Story</div>
+          <div class="sec-h2">About <em>Groomify</em></div>
+          <p style="color:var(--mt);font-size:13px;line-height:1.9;margin-top:1rem;margin-bottom:1.5rem">Founded in 2017, Groomify has been redefining the barbershop experience in Bhopal. We blend traditional barbering artistry with modern technology — giving you premium grooming and seamless booking in one place. Every visit is crafted to feel like a 5-star ritual.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem">
+            <div style="background:var(--s2);border-radius:8px;padding:1rem;border-left:2px solid var(--g)"><div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:0.3rem">Expert Barbers</div><div style="font-size:11.5px;color:var(--mt);line-height:1.6">Trained professionals with years of precision experience.</div></div>
+            <div style="background:var(--s2);border-radius:8px;padding:1rem;border-left:2px solid var(--g)"><div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:0.3rem">Premium Products</div><div style="font-size:11.5px;color:var(--mt);line-height:1.6">Only professional-grade, skin-safe grooming products.</div></div>
+            <div style="background:var(--s2);border-radius:8px;padding:1rem;border-left:2px solid var(--g)"><div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:0.3rem">Smart Booking</div><div style="font-size:11.5px;color:var(--mt);line-height:1.6">Book in seconds, get instant confirmation.</div></div>
+            <div style="background:var(--s2);border-radius:8px;padding:1rem;border-left:2px solid var(--g)"><div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:0.3rem">Luxury Experience</div><div style="font-size:11.5px;color:var(--mt);line-height:1.6">Hot towels, welcome drinks, and personal service.</div></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div style="background:var(--s3);border-radius:12px;padding:2rem;text-align:center;border:1px solid rgba(184,150,62,0.15)"><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--g)">5K+</div><div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mt);margin-top:4px">Happy Clients</div></div>
+          <div style="background:var(--s3);border-radius:12px;padding:2rem;text-align:center;border:1px solid rgba(184,150,62,0.15)"><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--g)">12</div><div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mt);margin-top:4px">Expert Barbers</div></div>
+          <div style="background:var(--s3);border-radius:12px;padding:2rem;text-align:center;border:1px solid rgba(184,150,62,0.15)"><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--g)">8yr</div><div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mt);margin-top:4px">In Business</div></div>
+          <div style="background:var(--s3);border-radius:12px;padding:2rem;text-align:center;border:1px solid rgba(184,150,62,0.15)"><div style="font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--g)">4.9★</div><div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--mt);margin-top:4px">Avg Rating</div></div>
+        </div>
+      </div>
+      <!-- Team -->
+      <div style="max-width:1100px;margin:3rem auto 0">
+        <div class="sec-label" style="margin-bottom:1rem">Meet The Team</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.8rem">
+          <div class="tm"><div class="tmav">AR</div><div class="tmn">Arjun</div><div class="tmr">Senior Stylist</div></div>
+          <div class="tm"><div class="tmav">VK</div><div class="tmn">Vikram</div><div class="tmr">Hair Expert</div></div>
+          <div class="tm"><div class="tmav">RH</div><div class="tmn">Rohan</div><div class="tmr">Beard Expert</div></div>
+          <div class="tm"><div class="tmav">DV</div><div class="tmn">Dev</div><div class="tmr">Colour Specialist</div></div>
+          <div class="tm"><div class="tmav">SM</div><div class="tmn">Suresh</div><div class="tmr">Scalp Therapist</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEWS SECTION (inline on home) -->
+    <div style="padding:4rem 2.5rem;background:var(--s1);border-top:1px solid rgba(184,150,62,0.1)">
+      <div style="max-width:1100px;margin:0 auto">
+        <div class="sec-label">Client Stories</div>
+        <div class="sec-h2" style="margin-bottom:1.5rem">What They <em>Say</em></div>
+        <div class="rev-strip" id="revStripHome"></div>
+
+        <!-- Write a review -->
+        <div style="margin-top:3rem;background:var(--s2);border:1px solid rgba(184,150,62,0.15);border-radius:12px;padding:2rem;max-width:560px">
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.3rem">Share Your Experience</div>
+          <div style="font-size:12px;color:var(--mt);margin-bottom:1.2rem">Your feedback helps us serve you better.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:0.7rem">
+            <div><label class="fl">Your Name</label><input class="fi" id="revName" placeholder="Rahul Sharma" type="text"/></div>
+            <div><label class="fl">City</label><input class="fi" id="revLoc" placeholder="Bhopal" type="text"/></div>
+          </div>
+          <div style="margin-bottom:0.8rem"><label class="fl">Star Rating</label>
+            <div style="display:flex;gap:6px;margin-top:4px" id="starPicker">
+              <span style="font-size:1.4rem;cursor:pointer;opacity:0.4" onclick="setRating(1)">★</span>
+              <span style="font-size:1.4rem;cursor:pointer;opacity:0.4" onclick="setRating(2)">★</span>
+              <span style="font-size:1.4rem;cursor:pointer;opacity:0.4" onclick="setRating(3)">★</span>
+              <span style="font-size:1.4rem;cursor:pointer;opacity:0.4" onclick="setRating(4)">★</span>
+              <span style="font-size:1.4rem;cursor:pointer;opacity:0.4" onclick="setRating(5)">★</span>
+            </div>
+          </div>
+          <div style="margin-bottom:1rem"><label class="fl">Your Review</label><textarea class="fi" id="revText" placeholder="Tell us about your experience..." style="height:90px;resize:vertical;margin-top:4px"></textarea></div>
+          <button class="btn-primary" onclick="submitReview()">Submit Review ✦</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- SERVICES -->
+  <div class="page" id="pg-services">
+    <div class="sec">
+      <div class="sec-label">What we offer</div>
+      <div class="sec-h2">Our <em>Signature</em> Services</div>
+      <p style="color:var(--mt);font-size:13px;margin-bottom:0;max-width:480px">Every service is a ritual — performed with precision, care, and professional-grade products.</p>
+      <div class="svc-scroll" id="allsvcs"></div>
+    </div>
+    <!-- Booking inline -->
+    <div class="book-panel" id="bookPanel" style="display:none"></div>
+  </div>
+  
+  <!-- BOOKING PAGE -->
+  <div class="page" id="pg-booking">
+    <div class="book-inner">
+      <div class="book-info">
+        <div class="sec-label">Reserve your slot</div>
+        <h3>Book an <em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--g)">Appointment</em></h3>
+        <p>Choose your service, pick a time, and let our expert barbers handle the rest.</p>
+        <ul class="perks">
+          <li>Instant confirmation via SMS</li>
+          <li>Choose your preferred barber</li>
+          <li>Free cancellation up to 2 hours before</li>
+          <li>Complimentary welcome drink</li>
+          <li>15-min grace period guaranteed</li>
+        </ul>
+      </div>
+      <div id="bFormWrap">
+        <div class="book-form" id="bForm">
+          <div class="fg">
+            <div class="fr"><label class="fl">First Name</label><input class="fi" id="fn" placeholder="Rahul" type="text"/></div>
+            <div class="fr"><label class="fl">Last Name</label><input class="fi" id="ln" placeholder="Sharma" type="text"/></div>
+          </div>
+          <div class="fr"><label class="fl">Phone</label><input class="fi" id="ph" placeholder="+91 98765 43210" type="tel"/></div>
+          <div class="fg">
+            <div class="fr">
+              <label class="fl">Service</label>
+              <select class="fi" id="svc">
+                <option value="">Select...</option>
+                <option>Classic Haircut — ₹499</option>
+                <option>Beard Trim — ₹349</option>
+                <option>Hair Spa — ₹799</option>
+                <option>Royal Shave — ₹599</option>
+                <option>Hair Colour — ₹899</option>
+                <option>Premium Package — ₹1,299</option>
+              </select>
+            </div>
+            <div class="fr">
+              <label class="fl">Barber</label>
+              <select class="fi" id="barber">
+                <option>Any available</option>
+                <option>Arjun — Senior</option>
+                <option>Vikram — Hair</option>
+                <option>Rohan — Beard</option>
+                <option>Dev — Colour</option>
+              </select>
+            </div>
+          </div>
+          <div class="fr"><label class="fl">Date</label><input class="fi" id="dt" type="date"/></div>
+          <div class="fr">
+            <label class="fl">Time Slot</label>
+            <div class="slots">
+              <button class="sl" onclick="pickSlot(this)">10:00 AM</button>
+              <button class="sl" onclick="pickSlot(this)">10:30 AM</button>
+              <button class="sl" onclick="pickSlot(this)">11:00 AM</button>
+              <button class="sl" onclick="pickSlot(this)">12:00 PM</button>
+              <button class="sl" onclick="pickSlot(this)">2:00 PM</button>
+              <button class="sl" onclick="pickSlot(this)">4:30 PM</button>
+              <button class="sl" onclick="pickSlot(this)">6:00 PM</button>
+              <button class="sl" onclick="pickSlot(this)">7:00 PM</button>
+              <button class="sl" onclick="pickSlot(this)">8:00 PM</button>
+            </div>
+          </div>
+          <button class="btn-primary" style="width:100%;margin-top:0.6rem" onclick="submitBook()">Confirm Appointment ✦</button>
+        </div>
+        <div class="book-success" id="bDone" style="display:none">
+          <span class="bs-icon">✦</span>
+          <div class="bs-h">Booking Confirmed!</div>
+          <p class="bs-p" id="bMsg"></p>
+          <button class="btn-primary" style="margin-top:1.2rem" onclick="resetBook()">Book Another</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- SHOP -->
+  <div class="page" id="pg-shop">
+    <div class="sec">
+      <div class="sec-label">Grooming Arsenal</div>
+      <div class="sec-h2">Premium <em>Products</em></div>
+      <div class="prod-tabs">
+        <button class="ptab on" onclick="filterP('all',this)">All</button>
+        <button class="ptab" onclick="filterP('hair',this)">Hair</button>
+        <button class="ptab" onclick="filterP('beard',this)">Beard</button>
+        <button class="ptab" onclick="filterP('skin',this)">Skin</button>
+      </div>
+      <div class="prod-grid" id="prodGrid"></div>
+    </div>
+  </div>
+  
+  
+  <!-- REVIEWS -->
+  <div class="page" id="pg-reviews">
+    <div class="sec">
+      <div class="sec-label">Client Stories</div>
+      <div class="sec-h2">What They <em>Say</em></div>
+      <div class="rev-strip" id="revStrip"></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.8rem;margin-top:1rem" id="revGrid2"></div>
+    </div>
+  </div>
+  
+  <!-- ABOUT -->
+  <div class="page" id="pg-about">
+    <div class="about-hero">
+      <div>
+        <div class="sec-label">Our Story</div>
+        <div class="sec-h2">About <em>Groomify</em></div>
+        <p style="color:var(--mt);font-size:13px;line-height:1.85;margin-top:0.8rem">Founded in 2017, Groomify has been redefining the barbershop experience in Bhopal. We blend traditional barbering artistry with modern tech — giving you premium grooming and seamless booking in one place.</p>
+        <div class="feat-grid">
+          <div class="feat"><div class="feat-t">Expert Barbers</div><div class="feat-d">Trained professionals with years of precision experience.</div></div>
+          <div class="feat"><div class="feat-t">Premium Products</div><div class="feat-d">Only professional-grade, skin-safe grooming products.</div></div>
+          <div class="feat"><div class="feat-t">Smart Booking</div><div class="feat-d">Book in seconds, get instant confirmation.</div></div>
+          <div class="feat"><div class="feat-t">Luxury Experience</div><div class="feat-d">Hot towels, welcome drinks, and personal service.</div></div>
+        </div>
+      </div>
+      <div class="about-vis">
+        <div class="av-box"><span style="font-size:3rem">✂️</span></div>
+        <div class="av-box" style="padding:1rem">
+          <div style="font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--g);margin-bottom:4px">Est.</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;color:var(--wh)">2017</div>
+          <div style="font-size:10px;color:var(--mt)">Bhopal, India</div>
+        </div>
+        <div class="av-box">8yr</div>
+      </div>
+    </div>
+    <div class="sec-label" style="padding:0 2.5rem;margin-top:1.5rem">Meet The Team</div>
+    <div class="team-row">
+      <div class="tm"><div class="tmav">AR</div><div class="tmn">Arjun</div><div class="tmr">Senior Stylist</div></div>
+      <div class="tm"><div class="tmav">VK</div><div class="tmn">Vikram</div><div class="tmr">Hair Expert</div></div>
+      <div class="tm"><div class="tmav">RH</div><div class="tmn">Rohan</div><div class="tmr">Beard Expert</div></div>
+      <div class="tm"><div class="tmav">DV</div><div class="tmn">Dev</div><div class="tmr">Colour Specialist</div></div>
+      <div class="tm"><div class="tmav">SM</div><div class="tmn">Suresh</div><div class="tmr">Scalp Therapist</div></div>
+    </div>
+  </div>
+  
+  <!-- CONTACT -->
+  <div class="page" id="pg-contact">
+    <div class="sec" style="padding-bottom:0">
+      <div class="sec-label">Find Us</div>
+      <div class="sec-h2">Get In <em>Touch</em></div>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="cinfo-item"><div class="cico">📍</div><div><div class="clbl">Address</div><div class="cval">42 MG Road, Bhopal, MP 462001</div></div></div>
+        <div class="cinfo-item"><div class="cico">📞</div><div><div class="clbl">Phone</div><div class="cval">+91 76297 12345</div></div></div>
+        <div class="cinfo-item"><div class="cico">✉️</div><div><div class="clbl">Email</div><div class="cval">hello@groomify.in</div></div></div>
+        <div class="cinfo-item"><div class="cico">🕐</div><div><div class="clbl">Hours</div><div class="cval">Mon–Sat 9 AM – 9 PM · Sun 10 AM – 6 PM</div></div></div>
+        <div class="cinfo-item"><div class="cico">📸</div><div><div class="clbl">Instagram</div><div class="cval">@groomify</div></div></div>
+      </div>
+      <div>
+        <div class="fr"><label class="fl">Name</label><input class="fi" placeholder="Your name" type="text"/></div>
+        <div class="fr"><label class="fl">Email</label><input class="fi" placeholder="your@email.com" type="email"/></div>
+        <div class="fr"><label class="fl">Message</label><textarea class="fi" placeholder="Your message..." style="height:100px;resize:vertical"></textarea></div>
+        <button class="btn-primary" style="width:100%" onclick="toast('Message sent! We will reply soon. ✦')">Send Message</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-logo">Groomify</div>
+    <div class="footer-copy">© 2025 Groomify · Smart Grooming, Simplified</div>
+    <div class="footer-links">
+      <span onclick="go('about')">About</span>
+      <span onclick="go('contact')">Contact</span>
+      <span onclick="go('shop')">Shop</span>
+    </div>
+  </div>
+  
+  </div><!-- end .app -->
+  
+  <!-- AUTH MODAL -->
+  <div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;align-items:center;justify-content:center">
+    <div style="background:var(--s2);border:1px solid rgba(184,150,62,0.2);border-radius:14px;padding:2.2rem;width:100%;max-width:400px;margin:1rem;position:relative">
+      <button onclick="closeAuth()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--mt);font-size:1.2rem;cursor:pointer">✕</button>
+
+      <!-- Gate message -->
+      <div id="authGateMsg" style="display:none;background:rgba(184,150,62,0.12);border:1px solid rgba(184,150,62,0.3);border-radius:8px;padding:0.6rem 0.9rem;font-size:12px;color:var(--g);margin-bottom:1rem;text-align:center"></div>
+
+      <!-- LOGIN / SIGNUP VIEW -->
+      <div id="authLoginView">
+        <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:0.3rem" id="authTitle">Welcome Back</div>
+        <div style="font-size:12px;color:var(--mt);margin-bottom:1.4rem" id="authSub">Sign in to manage bookings & orders</div>
+        <form onsubmit="submitAuth();return false;">
+          <div id="signupNameRow" style="display:none">
+            <div class="fr"><label class="fl">Full Name</label><input class="fi" id="authName" placeholder="Rahul Sharma" type="text"/></div>
+          </div>
+          <div class="fr"><label class="fl">Email</label><input class="fi" id="authEmail" placeholder="you@email.com" type="email"/></div>
+          <div class="fr"><label class="fl">Password</label><input class="fi" id="authPass" placeholder="••••••••" type="password"/></div>
+          <button type="submit" class="btn-primary" style="width:100%;margin-top:0.4rem">Continue ✦</button>
+        </form>
+        <div style="text-align:center;margin-top:0.9rem;font-size:12px;color:var(--mt)">
+          <span id="authToggleText">Don't have an account?</span>
+          <span onclick="toggleAuth()" style="color:var(--g);cursor:pointer;margin-left:4px" id="authToggleLink">Sign Up</span>
+        </div>
+        <div style="text-align:center;margin-top:0.5rem">
+          <span onclick="showForgot()" style="font-size:11.5px;color:var(--mt);cursor:pointer;text-decoration:underline;text-underline-offset:3px" id="forgotLink">Forgot Password?</span>
+        </div>
+        <div id="authErr" style="color:#e05;font-size:12px;margin-top:0.6rem;text-align:center;display:none"></div>
+      </div>
+
+      <!-- FORGOT PASSWORD VIEW -->
+      <div id="authForgotView" style="display:none">
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.3rem">Forgot Password</div>
+        <div style="font-size:12px;color:var(--mt);margin-bottom:1.4rem">Enter your registered email to receive a reset OTP.</div>
+        <div class="fr"><label class="fl">Email</label><input class="fi" id="fpEmail" placeholder="you@email.com" type="email"/></div>
+        <button class="btn-primary" style="width:100%;margin-top:0.4rem" onclick="submitForgot()">Send OTP ✦</button>
+        <div style="text-align:center;margin-top:0.9rem">
+          <span onclick="showLogin()" style="font-size:12px;color:var(--g);cursor:pointer">← Back to Login</span>
+        </div>
+        <div id="fpErr" style="color:#e05;font-size:12px;margin-top:0.6rem;text-align:center;display:none"></div>
+      </div>
+
+      <!-- RESET PASSWORD VIEW (enter OTP + new password) -->
+      <div id="authResetView" style="display:none">
+        <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:0.3rem">Reset Password</div>
+        <div style="font-size:12px;color:var(--mt);margin-bottom:0.5rem">Your OTP is shown below (normally sent via email).</div>
+        <div id="otpDisplay" style="background:rgba(184,150,62,0.12);border:1px solid rgba(184,150,62,0.3);border-radius:8px;padding:0.7rem;text-align:center;font-family:monospace;font-size:1.4rem;font-weight:700;color:var(--g);letter-spacing:0.2em;margin-bottom:1rem"></div>
+        <div class="fr"><label class="fl">Enter OTP</label><input class="fi" id="rpOtp" placeholder="6-digit OTP" type="text" maxlength="6"/></div>
+        <div class="fr"><label class="fl">New Password</label><input class="fi" id="rpPass" placeholder="Min 6 characters" type="password"/></div>
+        <button class="btn-primary" style="width:100%;margin-top:0.4rem" onclick="submitReset()">Reset Password ✦</button>
+        <div style="text-align:center;margin-top:0.9rem">
+          <span onclick="showForgot()" style="font-size:12px;color:var(--g);cursor:pointer">← Resend OTP</span>
+        </div>
+        <div id="rpErr" style="color:#e05;font-size:12px;margin-top:0.6rem;text-align:center;display:none"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+  const SVCS=[
+    {img:'https://images.pexels.com/photos/2775272/pexels-photo-2775272.jpeg?auto=compress&cs=tinysrgb&w=1200',n:'Classic Haircut',d:'Precision fade, texture styling & wash · 45 min',p:'₹499'},
+    {img:'https://images.pexels.com/photos/3998415/pexels-photo-3998415.jpeg?auto=compress&cs=tinysrgb&w=1200',n:'Beard Sculpt & Trim',d:'Sharp beard lining with premium oils · 30 min',p:'₹349'},
+    {img:'https://www.vivianheadspa.com/cdn-cgi/image/w=800,h=600,f=auto,q=85/images/services/scalp-detox-treatment.webp',n:'Luxury Hair Spa',d:'Deep scalp hydration & repair therapy · 60 min',p:'₹799'},
+    {img:'https://static.wixstatic.com/media/05ec7f_7222d9e727ea427eb5e1ba62cb82da48~mv2.jpg',n:'Royal Hot Towel Shave',d:'Straight razor shave with hot towel ritual · 45 min',p:'₹599'},
+    {img:'https://sonofelicebychristine.com/wp-content/uploads/2022/08/Mens-color-hair-salon.jpg',n:'Hair Colour & Texture',d:'Professional colouring with premium finish · 90 min',p:'₹899'},
+    {img:'https://thegentsplace.com/wp-content/uploads/2025/05/Hair-Service.jpg',n:'Groomify Signature Package',d:'Haircut + beard + facial + styling combo · 120 min',p:'₹1,299'}
+  ];
+  const REVS=[
+    {n:'Aditya K.',loc:'Bhopal',t:'Best haircut I have had in years. Arjun knew exactly what I wanted.',init:'AK'},
+    {n:'Priya N.',loc:'Indore',t:'Ordered beard oil online — beautifully packaged and genuinely luxurious.',init:'PN'},
+    {n:'Raj M.',loc:'Bhopal',t:'Premium Package is worth every rupee. The hot towel shave is an experience.',init:'RM'},
+    {n:'Suresh P.',loc:'Jabalpur',t:'Booking is seamless. Picked my barber, chose a time — instant confirmation.',init:'SP'},
+    {n:'Nikhil J.',loc:'Bhopal',t:'Scalp treatment made a visible difference after just three sessions.',init:'NJ'},
+    {n:'Ananya S.',loc:'Raipur',t:'Third appointment booked. Studio feels like a 5-star experience every time.',init:'AS'},
+  ];
+
+  let PRODS=[];
+  let currentUser=null;
+  let isLoginMode=true;
+  let pendingPage=null;
+  let forgotEmail='';
+
+  /* ── AUTH ── */
+  function openAuth(){
+    if(currentUser){
+      currentUser=null;
+      localStorage.removeItem('groomify_token');
+      localStorage.removeItem('groomify_user');
+      document.getElementById('authBtn').textContent='Login';
+      toast('Logged out successfully');
+      return;
+    }
+    showLogin();
+    document.getElementById('authModal').style.display='flex';
+  }
+  function closeAuth(){
+    document.getElementById('authModal').style.display='none';
+    document.getElementById('authGateMsg').style.display='none';
+    pendingPage=null;
+  }
+  function showLogin(){
+    document.getElementById('authLoginView').style.display='block';
+    document.getElementById('authForgotView').style.display='none';
+    document.getElementById('authResetView').style.display='none';
+    isLoginMode=true;
+    document.getElementById('authTitle').textContent='Welcome Back';
+    document.getElementById('authSub').textContent='Sign in to manage bookings & orders';
+    document.getElementById('signupNameRow').style.display='none';
+    document.getElementById('authToggleText').textContent="Don't have an account?";
+    document.getElementById('authToggleLink').textContent='Sign Up';
+    document.getElementById('forgotLink').style.display='inline';
+    document.getElementById('authErr').style.display='none';
+  }
+  function showForgot(){
+    document.getElementById('authLoginView').style.display='none';
+    document.getElementById('authForgotView').style.display='block';
+    document.getElementById('authResetView').style.display='none';
+    document.getElementById('fpErr').style.display='none';
+  }
+  function toggleAuth(){
+    isLoginMode=!isLoginMode;
+    document.getElementById('authTitle').textContent=isLoginMode?'Welcome Back':'Create Account';
+    document.getElementById('authSub').textContent=isLoginMode?'Sign in to manage bookings & orders':'Join Groomify for a premium experience';
+    document.getElementById('signupNameRow').style.display=isLoginMode?'none':'block';
+    document.getElementById('authToggleText').textContent=isLoginMode?'Don\'t have an account?':'Already have an account?';
+    document.getElementById('authToggleLink').textContent=isLoginMode?'Sign Up':'Log In';
+    document.getElementById('forgotLink').style.display=isLoginMode?'inline':'none';
+    document.getElementById('authErr').style.display='none';
+  }
+  async function submitAuth(){
+    const email=document.getElementById('authEmail').value.trim();
+    const pass=document.getElementById('authPass').value;
+    const errEl=document.getElementById('authErr');
+    errEl.style.display='none';
+    if(!email||!pass){errEl.textContent='Please fill all fields';errEl.style.display='block';return;}
+    const endpoint=isLoginMode?'/api/auth/login':'/api/auth/signup';
+    const body={email,password:pass};
+    if(!isLoginMode){
+      const name=document.getElementById('authName').value.trim();
+      if(!name){errEl.textContent='Please enter your name';errEl.style.display='block';return;}
+      body.name=name;
+    }
+    try{
+      const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data=await res.json();
+      if(!res.ok){errEl.textContent=data.message||'Something went wrong';errEl.style.display='block';return;}
+      if(isLoginMode){
+        currentUser=data.user;
+        localStorage.setItem('groomify_token',data.token);
+        localStorage.setItem('groomify_user',JSON.stringify(data.user));
+        document.getElementById('authBtn').textContent='Logout ('+data.user.name.split(' ')[0]+')';
+        closeAuth();
+        toast('Welcome back, '+data.user.name.split(' ')[0]+'! ✦');
+        if(pendingPage){const pp=pendingPage;pendingPage=null;go(pp);}
+      } else {
+        toast('Account created! Please log in. ✦');
+        toggleAuth();
+      }
+    }catch(e){errEl.textContent='Network error. Try again.';errEl.style.display='block';}
+  }
+  async function submitForgot(){
+    const email=document.getElementById('fpEmail').value.trim();
+    const errEl=document.getElementById('fpErr');
+    errEl.style.display='none';
+    if(!email){errEl.textContent='Please enter your email';errEl.style.display='block';return;}
+    try{
+      const res=await fetch('/api/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+      const data=await res.json();
+      if(!res.ok){errEl.textContent=data.message||'Error';errEl.style.display='block';return;}
+      forgotEmail=email;
+      document.getElementById('authForgotView').style.display='none';
+      document.getElementById('authResetView').style.display='block';
+      document.getElementById('otpDisplay').textContent=data.otp;
+      document.getElementById('rpErr').style.display='none';
+    }catch(e){errEl.textContent='Network error. Try again.';errEl.style.display='block';}
+  }
+  async function submitReset(){
+    const otp=document.getElementById('rpOtp').value.trim();
+    const pass=document.getElementById('rpPass').value;
+    const errEl=document.getElementById('rpErr');
+    errEl.style.display='none';
+    if(!otp||!pass){errEl.textContent='Please fill all fields';errEl.style.display='block';return;}
+    if(pass.length<6){errEl.textContent='Password must be at least 6 characters';errEl.style.display='block';return;}
+    try{
+      const res=await fetch('/api/auth/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:forgotEmail,otp,newPassword:pass})});
+      const data=await res.json();
+      if(!res.ok){errEl.textContent=data.message||'Error';errEl.style.display='block';return;}
+      toast('Password reset! Please log in with your new password. ✦');
+      showLogin();
+    }catch(e){errEl.textContent='Network error. Try again.';errEl.style.display='block';}
+  }
+
+  /* ── NAV ── */
+  function go(pg){
+    const gated=['shop'];
+    if(gated.includes(pg)&&!currentUser){
+      pendingPage=pg;
+      document.getElementById('authModal').style.display='flex';
+      document.getElementById('authGateMsg').style.display='block';
+      document.getElementById('authGateMsg').textContent='Please log in to access the Shop';
+      return;
+    }
+    pendingPage=null;
+    document.getElementById('authGateMsg').style.display='none';
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+    document.getElementById('pg-'+pg).classList.add('on');
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+    const nl=document.getElementById('nl-'+pg);
+    if(nl)nl.classList.add('active');
+    document.querySelector('.app').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  /* ── SERVICES ── */
+  function bookService(){
+    if(!currentUser){
+      pendingPage='booking';
+      showLogin();
+      document.getElementById('authModal').style.display='flex';
+      document.getElementById('authGateMsg').style.display='block';
+      document.getElementById('authGateMsg').textContent='Please log in or sign up to book a service';
+      return;
+    }
+    go('booking');
+  }
+  function renderSvcs(elId){
+    document.getElementById(elId).innerHTML=SVCS.map(s=>`
+      <div class="svc-card">
+        <div style="height:220px;background:url('${s.img}') center/cover no-repeat;position:relative">
+          <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent 60%)"></div>
+          <div style="position:absolute;bottom:1rem;left:1rem;right:1rem">
+            <div class="svc-name" style="font-size:1.3rem;color:white">${s.n}</div>
+            <div class="svc-dur" style="color:rgba(255,255,255,0.82)">${s.d}</div>
+          </div>
+        </div>
+        <div style="padding:1.2rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+            <div class="svc-price">${s.p}</div>
+            <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--g)">Top Rated</div>
+          </div>
+          <button class="svc-book-btn" onclick="bookService()">Book Service</button>
+        </div>
+      </div>`).join('');
+  }
+
+  /* ── PRODUCTS (fetched from API) ── */
+  async function loadProds(){
+    try{
+      const res=await fetch('/api/products');
+      const data=await res.json();
+      if(data&&data.length>0){
+        PRODS=data.map(p=>({_id:p._id,img:p.image||'https://images.unsplash.com/photo-1626784215021-2e39ccf971cd?auto=format&fit=crop&w=800&q=100',n:p.name,b:p.brand||'',d:p.description||'',p:'₹'+p.price,badge:null,cat:p.category||'all',link:p.externalLink||'',site:p.externalSite||''}));
+      }
+    }catch(e){console.log('Using local products');}
+    if(!PRODS.length){
+      PRODS=[
+        {img:'https://m.media-amazon.com/images/I/71RoGR5tjaL.jpg',n:'Beard & Moustache Oil',b:'Beardo',d:'Argan & almond oil blend that softens beard and adds healthy shine.',p:'₹499',badge:'Best',cat:'beard',link:'https://www.beardo.in/collections/beard-oils',site:'beardo.in'},
+        {img:'https://m.media-amazon.com/images/I/41i7I1UR8TL.jpg',n:'Hair Wax — Strong Hold',b:'Ustraa',d:'Strong-hold matte clay wax for textured look all day.',p:'₹399',badge:'Hot',cat:'hair',link:'https://www.ustraa.com/collections/hair-care',site:'ustraa.com'},
+        {img:'https://m.media-amazon.com/images/I/51pZOVwEaaL.jpg',n:'Activated Charcoal Face Wash',b:'Bombay Shaving Company',d:'Deep-cleansing charcoal formula that unclogs pores.',p:'₹349',badge:'New',cat:'skin',link:'https://www.bombayshavingcompany.com/collections/face-wash',site:'bombayshavingcompany.com'},
+        {img:'https://images-eu.ssl-images-amazon.com/images/I/71nRo24vVCL._SL1000_.jpg',n:'Beard Growth Serum',b:'Beardo',d:'Biotin & caffeine-powered serum for a fuller, thicker beard.',p:'₹699',badge:'New',cat:'beard',link:'https://www.beardo.in/collections/beard-growth',site:'beardo.in'},
+        {img:'https://cdn01.pharmeasy.in/dam/products_otc/B48307/ustraa-anti-dandruff-shampoo-250-ml-6.4-1671742244.jpg',n:'Anti-Dandruff Shampoo',b:'Ustraa',d:'Zinc pyrithione formula that clears flakes and soothes scalp.',p:'₹349',badge:null,cat:'hair',link:'https://www.ustraa.com/collections/shampoo',site:'ustraa.com'},
+        {img:'https://m.media-amazon.com/images/I/61-+3Ps1lsL.jpg',n:'Men Expert Moisturiser SPF 20',b:"L'Oreal Paris",d:'Lightweight non-greasy daily face moisturiser with SPF 20.',p:'₹449',badge:null,cat:'skin',link:'https://www.lorealparis.co.in/men-expert',site:'lorealparis.co.in'},
+        {img:'https://5.imimg.com/data5/ANDROID/Default/2023/2/MV/CW/TX/185085351/product-jpeg-1000x1000.jpg',n:'Hair Serum — Frizz Control',b:'Livon',d:'Tames frizz, adds shine and makes hair soft to the touch.',p:'₹199',badge:null,cat:'hair',link:'https://www.amazon.in/s?k=livon+hair+serum',site:'amazon.in'},
+        {img:'https://images-na.ssl-images-amazon.com/images/I/81BlDXtFvHL.jpg',n:'DE Shaving Safety Razor',b:'Bombay Shaving Company',d:'Precision-engineered double-edge safety razor, chrome finish.',p:'₹999',badge:null,cat:'beard',link:'https://www.bombayshavingcompany.com/collections/razors',site:'bombayshavingcompany.com'},
+        {img:'https://m.media-amazon.com/images/I/41tsB-cOqzL.jpg',n:'Cedarwood Body Wash',b:'The Man Company',d:'Luxury body wash with cedarwood & aloe vera.',p:'₹299',badge:null,cat:'skin',link:'https://www.themancompany.com/collections/body-wash',site:'themancompany.com'},
+        {img:'https://m.media-amazon.com/images/I/61t0CajUBdL.jpg',n:'Mach3 Razor + Gel Combo',b:'Gillette',d:'Three-blade precision razor for an ultra-smooth shave.',p:'₹549',badge:null,cat:'beard',link:'https://gillette.in/collections/razors',site:'gillette.in'},
+        {img:'https://images-na.ssl-images-amazon.com/images/I/71ZKLI829-L.jpg',n:'Ayurvedic Scalp & Hair Oil',b:'Kesh King',d:'21-herb hair oil that reduces hairfall and promotes growth.',p:'₹249',badge:null,cat:'hair',link:'https://www.amazon.in/s?k=kesh+king+hair+oil',site:'amazon.in'},
+        {img:'https://m.media-amazon.com/images/I/41K0ci5kjbL.jpg',n:'Neem Face Scrub',b:'The Man Company',d:'Walnut granule scrub with neem and tea tree for clear skin.',p:'₹299',badge:null,cat:'skin',link:'https://www.themancompany.com/collections/face-scrub',site:'themancompany.com'}
+      ];
+    }
+    renderProds();
+  }
+
+  function renderProds(cat='all'){
+    const f=cat==='all'?PRODS:PRODS.filter(p=>p.cat===cat);
+    document.getElementById('prodGrid').innerHTML=f.length?f.map((p)=>`
+      <div class="prod-card">
+        <div class="prod-img" style="background:url('${p.img}') center/cover no-repeat;height:240px;position:relative;">
+          ${p.badge?`<div class="pbadge">${p.badge}</div>`:''}
+          ${p.site?`<div style="position:absolute;bottom:0.6rem;right:0.7rem;background:rgba(0,0,0,0.65);border-radius:4px;padding:2px 7px;font-size:10px;color:rgba(255,255,255,0.8);letter-spacing:0.04em">${p.site}</div>`:''}
+        </div>
+        <div class="prod-body">
+          <div class="pbrand">${p.b}</div>
+          <div class="pname">${p.n}</div>
+          <div class="pdesc">${p.d}</div>
+          <div class="pfoot">
+            <div class="pprice">${p.p}</div>
+            ${p.link?`<a href="${p.link}" target="_blank" rel="noopener noreferrer" style="background:var(--g);color:#000;font-size:11px;font-weight:700;letter-spacing:0.06em;padding:7px 14px;border-radius:6px;text-decoration:none;white-space:nowrap">Buy Now →</a>`:''}
+          </div>
+        </div>
+      </div>`).join(''):'<div style="color:var(--mt);padding:2rem">No products in this category.</div>';
+  }
+
+  function filterP(cat,btn){
+    document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    renderProds(cat);
+  }
+
+  /* ── REVIEWS ── */
+  let userRating=5;
+  function setRating(n){
+    userRating=n;
+    document.querySelectorAll('#starPicker span').forEach((s,i)=>{s.style.opacity=i<n?'1':'0.3';s.style.color=i<n?'var(--g)':'';});
+  }
+  function revCardHtml(r){
+    const init=r.name?r.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase():'??';
+    const stars='★'.repeat(r.rating||5)+'☆'.repeat(5-(r.rating||5));
+    return`<div class="rev-card">
+      <div class="rstars" style="color:var(--g)">${stars}</div>
+      <div class="rtxt">"${r.text||r.t}"</div>
+      <div class="rauth"><div class="rav">${init}</div><div><div class="rname">${r.name||r.n}</div><div class="rloc">${r.location||r.loc||'Bhopal'}</div></div></div>
+    </div>`;
+  }
+  async function loadReviews(){
+    let reviews=[];
+    try{
+      const res=await fetch('/api/reviews');
+      const data=await res.json();
+      if(data&&data.length)reviews=data;
+    }catch(e){}
+    if(!reviews.length)reviews=REVS.map(r=>({name:r.n,location:r.loc,text:r.t,rating:5}));
+    const html=reviews.map(revCardHtml).join('');
+    const stripHome=document.getElementById('revStripHome');
+    const strip=document.getElementById('revStrip');
+    const grid=document.getElementById('revGrid2');
+    if(stripHome)stripHome.innerHTML=html;
+    if(strip)strip.innerHTML=html;
+    if(grid)grid.innerHTML=html;
+  }
+  async function submitReview(){
+    const name=document.getElementById('revName').value.trim();
+    const loc=document.getElementById('revLoc').value.trim()||'Bhopal';
+    const text=document.getElementById('revText').value.trim();
+    if(!name||!text){toast('Please enter your name and review');return;}
+    try{
+      await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,location:loc,text,rating:userRating,userId:currentUser?currentUser.id:null})});
+      document.getElementById('revName').value='';
+      document.getElementById('revLoc').value='';
+      document.getElementById('revText').value='';
+      setRating(5);
+      toast('Thank you for your review! ✦');
+      loadReviews();
+    }catch(e){toast('Could not submit review. Try again.');}
+  }
+  function renderRevs(){loadReviews();}
+
+  /* ── BOOKING ── */
+  function pickSlot(btn){
+    document.querySelectorAll('.sl').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+  }
+  async function submitBook(){
+    const fn=document.getElementById('fn').value.trim();
+    const ln=document.getElementById('ln').value.trim();
+    const ph=document.getElementById('ph').value.trim();
+    const svc=document.getElementById('svc').value;
+    const barber=document.getElementById('barber').value;
+    const dt=document.getElementById('dt').value;
+    const slot=document.querySelector('.sl.on');
+    if(!fn||!svc||!dt||!slot||!ph){toast('Please fill all required fields');return;}
+    try{
+      await fetch('/api/bookings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        userId:currentUser?currentUser.id:null,
+        fullName:fn+(ln?' '+ln:''),
+        phone:ph,
+        service:svc,
+        barber,
+        date:dt,
+        slot:slot.textContent,
+        status:'confirmed'
+      })});
+    }catch(e){}
+    document.getElementById('bForm').style.display='none';
+    document.getElementById('bDone').style.display='block';
+    const d=new Date(dt);
+    document.getElementById('bMsg').textContent=`Hi ${fn}! Your ${svc.split('—')[0].trim()} on ${d.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'})} at ${slot.textContent} is confirmed.`;
+  }
+  function resetBook(){
+    document.getElementById('bForm').style.display='block';
+    document.getElementById('bDone').style.display='none';
+    document.getElementById('fn').value='';
+    document.getElementById('ln').value='';
+    document.getElementById('ph').value='';
+    document.getElementById('dt').value='';
+    document.getElementById('svc').value='';
+    document.querySelectorAll('.sl').forEach(b=>b.classList.remove('on'));
+  }
+
+  /* ── TOAST ── */
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.classList.add('on');
+    clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),3000);
+  }
+
+  /* ── INIT ── */
+  const saved=localStorage.getItem('groomify_user');
+  if(saved){currentUser=JSON.parse(saved);document.getElementById('authBtn').textContent='Logout ('+currentUser.name.split(' ')[0]+')';}
+
+  const tItems=['Classic Haircut','Beard Trim','Hair Spa','Royal Shave','Hair Colour','Premium Package','Expert Barbers','5000+ Clients','Book Online'];
+  const tHtml=tItems.map(i=>`<span class="ticker-item">${i}<span class="ticker-sep">✦</span></span>`).join('');
+  document.getElementById('tickerEl').innerHTML=tHtml+tHtml;
+
+  const cur=document.getElementById('cur');
+  const curR=document.getElementById('curR');
+  document.addEventListener('mousemove',e=>{
+    cur.style.left=e.clientX-4+'px';cur.style.top=e.clientY-4+'px';
+    curR.style.left=e.clientX-16+'px';curR.style.top=e.clientY-16+'px';
+  });
+
+  const dm=new Date();dm.setDate(dm.getDate()+1);
+  document.getElementById('dt').min=dm.toISOString().split('T')[0];
+
+  renderSvcs('homesvcs');
+  renderSvcs('allsvcs');
+  loadProds();
+  renderRevs();
+
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.style.opacity='1';
+        entry.target.style.transform='translateY(0px)';
+      }
+    });
+  },{threshold:0.1});
+
+  [...document.querySelectorAll('.svc-card,.prod-card,.rev-card,.feat,.tm')].forEach(el=>{
+    el.style.opacity='0';
+    el.style.transform='translateY(40px)';
+    el.style.transition='all 0.8s ease';
+    observer.observe(el);
+  });
+
+  window.addEventListener('scroll',()=>{
+    const y=window.scrollY;
+    document.querySelector('.hero').style.backgroundPosition=`center ${y*0.35}px`;
+  });
+  </script>
+  
